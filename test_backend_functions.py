@@ -23,15 +23,15 @@ class TestCreateUser(unittest.TestCase):
         backendFunctions.create_user("testUser","testPassword")
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
-        result = cursor.execute("SELECT username, password_hash FROM user WHERE username = 'testUser' AND password_hash = 'hashashahsashash'") # TODO: fill in with hashvalue for "testPassword".
-        print(result.fetchall())
-        self.assertEqual(1,result.fetchall())
+        result = cursor.execute("SELECT username, password_hash FROM user WHERE username = 'testUser' AND password_hash = 'testPassword'") # TODO: fill in with hashvalue for "testPassword".
+        self.assertEqual(1,len( result.fetchall()))
         connection.close()
         
     def clear_user_table(self):
         connection = sqlite3.connect(self.database)
         cursor = connection.cursor()
         cursor.execute("DELETE FROM user")
+        connection.commit()
         connection.close()
     
     def tearDown(self):
