@@ -5,7 +5,7 @@ class BackendFunctions:
     def __init__(self, database):
         self.database = database
 
-    def create_user(self, username, hash):
+    def create_user(self, username, hash) -> bool:
         try:
             connection = sqlite3.connect(self.database)
             cursor = connection.cursor()
@@ -27,7 +27,7 @@ class BackendFunctions:
         finally:
             connection.close()
 
-    def login_user(self, username, hash):
+    def login_user(self, username, hash) -> bool:
         try:
             connection = sqlite3.connect(self.database)
             cursor = connection.cursor()
