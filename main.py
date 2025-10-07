@@ -8,16 +8,33 @@ backendFunctions = None
 class Handler(BaseHTTPRequestHandler):
     backendFunctions = None
 
-    def _set_headers(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/html')
-        self.end_headers()
+    # def _set_headers(self):
+    #     self.send_response(200)
+    #     self.send_header('Content-type','text/html')
+    #     self.end_headers()
 
     def do_GET(self):
-        print(self.headers.get('Cookie'))
-        self._set_headers()
+        if self.path == "/logout":
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.send_header('Set-Cookie',f'simple_token="_"; Max-Age=1' ) # TODO: Generate some UUID and store it in the database which the cookie can be compared to.
+            self.end_headers()
+
+            self.wfile.write(b'<!DOCTYPE html><html><body><h2>You got logged out<br><a href="login">Login</a></h2></body></html>')
+            return
+
+        token_cookie = self.headers.get('Cookie')
+        if token_cookie is not None and token_cookie != "_": # TODO: compare with backend database stored username + uuid token.
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
+            self.wfile.write(b'<!DOCTYPE html><html><body><h2>Login successfull Form<br><a href="logout">Logout</a></h2></body></html>')
+            return
 
         if self.path == "/create_user":
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
             self.wfile.write(b"""<!DOCTYPE html>
 <html>
 <body>
@@ -33,8 +50,10 @@ class Handler(BaseHTTPRequestHandler):
 </form> 
 </body>
 </html>""")
-
         else:
+            self.send_response(200)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
             self.wfile.write(b"""<!DOCTYPE html>
 <html>
 <body>
@@ -94,7 +113,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Set-Cookie',f'simple_token={username}; Max-Age=5560' )
         self.end_headers()
 
-        self.wfile.write(f" POST request: {post_data.decode('utf-8')}".encode('utf-8'))
+        self.wfile.write(b'<!DOCTYPE html><html><body><h2>Login successfull Form<br><a href="logout">Logout</a></h2></body></html>')
 
 def run(server_class=HTTPServer, handler_class=Handler, port=8000):
     config = configparser.ConfigParser()
