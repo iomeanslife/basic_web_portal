@@ -8,11 +8,6 @@ backendFunctions = None
 class Handler(BaseHTTPRequestHandler):
     backendFunctions = None
 
-    # def _set_headers(self):
-    #     self.send_response(200)
-    #     self.send_header('Content-type','text/html')
-    #     self.end_headers()
-
     def do_GET(self):
         if self.path == "/logout":
             self.send_response(200)
@@ -99,7 +94,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header('Set-Cookie',f'simple_token={username}; Max-Age=5560' ) # TODO: Generate some UUID and store it in the database which the cookie can be compared to.
             self.end_headers()
 
-            self.wfile.write(f'User "{username}" was created'.encode('utf-8'))
+            self.wfile.write(b'<!DOCTYPE html><html><body><h2>User was created.<br><a href="login">Login</a></h2></body></html>')
             return
         elif self.path == "/login" and Handler.backendFunctions.login_user(username, hash) is not True:
             self.send_response(401)
@@ -115,16 +110,18 @@ class Handler(BaseHTTPRequestHandler):
 
         self.wfile.write(b'<!DOCTYPE html><html><body><h2>Login successfull Form<br><a href="logout">Logout</a></h2></body></html>')
 
-def run(server_class=HTTPServer, handler_class=Handler, port=8000):
-    config = configparser.ConfigParser()
-    config.read("config.ini")
-    database = config.get("Connection","Database")
+def run( database, url, port, server_class=HTTPServer, handler_class=Handler):
     setup_database.setup_database(database)
     Handler.backendFunctions = backend_functions.BackendFunctions(database)
 
-    server_address = ('', port)
+    server_address = (url, port)
     httpd = server_class(server_address,handler_class)
     httpd.serve_forever()
 
 if __name__ == '__main__':
-    run()
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    database = config.get("Connection","Database")
+    url = config.get("Connection","WebAddress")
+    port = config.getint("Connection", "Port")
+    run(database,url,port)
