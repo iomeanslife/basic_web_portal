@@ -54,15 +54,12 @@ class TestLoginUser(unittest.TestCase):
     
     def test_login_user(self):
         connection = sqlite3.connect(self.database)
+        cursor = connection.cursor()
         cursor.execute(f"INSERT INTO user VALUES('testUser', 'testPassword') ")
         connection.commit()
 
         backendFunctions = backend_functions.BackendFunctions(database=self.database)
-        backendFunctions.login_user("testUser","testPassword")
-        
-        cursor = connection.cursor()
-        result = cursor.execute("SELECT username, password_hash FROM user WHERE username = 'testUser' AND password_hash = 'testPassword'") # TODO: fill in with hashvalue for "testPassword".
-        self.assertEqual(1,len( result.fetchall()))
+        self.assertTrue(backendFunctions.login_user("testUser","testPassword"))
         connection.close()
         
     def clear_user_table(self):
