@@ -24,7 +24,7 @@ to run all tests from the commandline, run:
 
 ``` python3 -m unittest ```
 
-Read [https://docs.python.org/3/library/unittest.html](Python documentation: unittest) for further information.
+Read [Python documentation: unittest](https://docs.python.org/3/library/unittest.html) for further information.
 
 ## Files
 
