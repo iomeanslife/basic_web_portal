@@ -6,6 +6,10 @@ A basic website using Python3 and sqlite with no external packages.
 
 This is just an excersize for educational purposes, and in no way meant to be used in a production setting without serious rework for modern cyber security considerations. Please read the [License](#license) before use.
 
+## Requirements
+
+This project needs both `python3` and `sqlite` installed and accesable in CLI and python code.
+
 ## Usage
 
 After cloning the repo, run `main.py` with python in the command line of your choosing. The exact command depends on your operating system and development settings.
